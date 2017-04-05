@@ -1,4 +1,4 @@
-import {diff as diffList} from './list-diff';
+import {diffList} from './list-diff';
 
 
 function Element (tagName, props, children) {
@@ -31,7 +31,7 @@ Element.prototype.render = function () {
 var oldList = [{id: "a"}, {id: "b"}, {id: "c"}, {id: "d"}, {id: "e"}]
 var newList = [{id: "c"}, {id: "a"}, {id: "b"}, {id: "e"}, {id: "f"}]
  
-var moves = diffList(oldList, newList, "id")
+var moves = diffList(newList, oldList, "id")
 // `moves` is a sequence of actions (remove or insert):  
 // type 0 is removing, type 1 is inserting 
 // moves: [ 
