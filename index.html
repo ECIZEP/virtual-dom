@@ -6,12 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>V-Dom</title>
-    
+
 </head>
 
 <body>
-
     <script type="text/javascript" src="./dist/js/main.js"></script>
+    <script>
+        let tree = new Element('div', { haha: "sdf", className: "hah" }, [
+            new Element('li', { key: "one" }, ["one"]),
+            new Element('li', { key: "two" }, ["two"])
+        ]);
+        console.log(tree);
+
+        let dom = tree.render();
+        document.body.appendChild(dom);
+
+        let newTree = new Element('div', { className: "heh" }, [
+            new Element('li', { key: "two" }, ["twoha"]),
+            new Element('li', { key: "one" }, ["oneha"])
+        ]);
+
+        let patches = diff(newTree, tree);
+        console.log(patches);
+
+        patch(dom, patches);
+    </script>
+    
 </body>
 
 </html>

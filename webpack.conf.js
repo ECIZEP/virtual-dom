@@ -3,7 +3,7 @@ var htmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: {
-        main: './src/js/diff.js'
+        main: './src/js/index.js'
     },
     output: {
         path: path.resolve(__dirname, './dist'),

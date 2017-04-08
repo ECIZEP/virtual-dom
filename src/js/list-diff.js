@@ -79,7 +79,7 @@ function diffList (newList, oldList, key) {
 				j++;
 			} else {
 				if (!oldKeyIndex.hasOwnProperty(itemKey)) {
-					// 这是一个新的元素
+					// 这是一个不可复用的新元素,patch时render一个新元素
 					insert(i, item);
 				} else {
 					// 乱序的旧元素，算法对于这种情况的处理没有用到动规的思想，所以最后的结果不是最好的情况
@@ -90,7 +90,7 @@ function diffList (newList, oldList, key) {
 						remove(i);
 						simulateList.splice(j++,1);
 					} else {
-						// 这种情况就只能当新节点插入了
+						// 这种情况插入，不过会在patch时复用
 						insert(i,item);
 					}
 				}
@@ -104,14 +104,14 @@ function diffList (newList, oldList, key) {
 
 	function remove(i) {
 		moves.push({
-			type: 0,
+			type: "remove",
 			index: i
 		});
 	}
 
 	function insert(i, item) {
 		moves.push({
-			type: 1,
+			type: "insert",
 			index: i,
 			item: item
 		});
@@ -166,7 +166,7 @@ exports.diffList = diffList;
 /*var oldList = [{id: "a"}, {id: "b"}, {id: "c"}, {id: "d"}, {id: "e"}]
 var newList = [{id: "c"}, {id: "a"}, {id: "b"}, {id: "e"}, {id: "f"}]
  
-var moves = diffList(newList, oldList, "id")
+var moves = diffList(newList, oldList, "key")
 // `moves` is a sequence of actions (remove or insert):  
 // type 0 is removing, type 1 is inserting 
 // moves: [ 
@@ -188,4 +188,4 @@ moves.moves.forEach(function(move) {
  
 // now `oldList` is equal to `newList` 
 // [{id: "c"}, {id: "a"}, {id: "b"}, {id: "e"}, {id: "f"}] 
-console.log(oldList)*/ 
+console.log(oldList)*/

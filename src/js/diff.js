@@ -29,28 +29,31 @@ function dfsWalk(newNode, oldNode, patches, index) {
             });
         }
     } else if (newNode.tagName === oldNode.tagName && newNode.key === oldNode.key) {
-        // same node, diff
-        // first diff props
+        // 标签一样，并且key一致，比较属性值
         let propsPatches = diffProps(newNode,oldNode);
         propsPatches ? currentPatches.push({
             type: PATCH.PROPS,
             props: propsPatches
         }) : void 666;
 
-        // second diff children reorder which contains remove and insert
+        // 比较子元素，得到从old --> new 的步骤
+        // 如果key都是 undefined，diffList无法优化重排
         let diffChildren = diffList(newNode.children, oldNode.children, "key");
+        // newChildren是对应oldNode.children序列的新元素，
         let newChildren = diffChildren.children;
 
-        // need to reorder
+        // 子元素需要重新排序，把重排的步骤压入
+        // key:undefined的情况，此处diffChildren.moves为空，按最坏的情况处理，递归进子节点一个一个修改Text
         diffChildren.moves.length > 0 ? currentPatches.push({
             type: PATCH.REORDER,
             moves: diffChildren.moves
         }) : void 666;
 
-        // now dfs
+        // 深度优先递归
         let leftNode = null;
         let currentIndex  = index;
         oldNode.children.forEach(function (child, i) {
+            // 深度优先记录下标
             currentIndex  = (leftNode && leftNode.count)
              ? currentIndex + leftNode.count + 1 : currentIndex + 1;
             // 这里只需要比newNode和oldNode共同拥有的子元素，old的删除，新的直接插
@@ -100,9 +103,7 @@ function diffProps (newNode, oldNode) {
     return propsPatches;
 }
 
-
-
-
+/*
   var AGE = 'age'
   var REPUTATION = 'reputation'
 
@@ -188,4 +189,4 @@ function diffProps (newNode, oldNode) {
         return b[sortKey] - a[sortKey]
       }
     })
-  }
+  }*/
