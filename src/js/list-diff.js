@@ -15,7 +15,7 @@
  * 
  * @param {Array} newList 
  * @param {Array} oldList 
- * @param {Object} key 
+ * @param {Object} key, must be offered ,otherwise it goes wrong
  */
 function diffList (newList, oldList, key) {
 	let newListMap = makeKeyIndexAndFree(newList, key),
@@ -25,7 +25,7 @@ function diffList (newList, oldList, key) {
 		newKeyIndex = newListMap.keyIndex,
 		i = 0,
 		freeIndex = 0,
-		// old中不用删除的子元素数组
+		// 根据oldList的序号，找到newList中key对应的新的节点
 		children = [],
 		// 记录操作的对象数组，type-0为删除 1位插入
 		moves = [];
@@ -45,7 +45,7 @@ function diffList (newList, oldList, key) {
 			}
 		} else {
 			let freeItem = newFree[freeIndex++];
-			children.push(freeItem);
+			children.push(freeItem || null);
 		}
 		i++;
 	}
@@ -73,7 +73,7 @@ function diffList (newList, oldList, key) {
 		let simulateItem = simulateList[j];
 		let simulateItemKey = getKeyValue(simulateItem, key);
 
-		if (simulateItemKey) {
+		if (simulateItem) {
 			if (simulateItemKey === itemKey) {
 				// 位置和元素都没有变化，不用动
 				j++;
@@ -86,8 +86,9 @@ function diffList (newList, oldList, key) {
 					let nextSimulateKey = getKeyValue(simulateList[j+1], key);
 					if (nextSimulateKey === itemKey) {
 						// 简单的判断下，simulate下一个节点和我一样
+						// 思考下，这里为什么是i
 						remove(i);
-						simulateList.splice(j,1);
+						simulateList.splice(j++,1);
 					} else {
 						// 这种情况就只能当新节点插入了
 						insert(i,item);
@@ -160,3 +161,31 @@ function getKeyValue(item, key) {
 }
 
 exports.diffList = diffList;
+
+
+/*var oldList = [{id: "a"}, {id: "b"}, {id: "c"}, {id: "d"}, {id: "e"}]
+var newList = [{id: "c"}, {id: "a"}, {id: "b"}, {id: "e"}, {id: "f"}]
+ 
+var moves = diffList(newList, oldList, "id")
+// `moves` is a sequence of actions (remove or insert):  
+// type 0 is removing, type 1 is inserting 
+// moves: [ 
+//   {index: 3, type: 0}, 
+//   {index: 0, type: 1, item: {id: "c"}},  
+//   {index: 3, type: 0},  
+//   {index: 4, type: 1, item: {id: "f"}} 
+//  ] 
+ 
+console.log(JSON.stringify(moves.moves));
+
+moves.moves.forEach(function(move) {
+  if (move.type === 0) {
+    oldList.splice(move.index, 1) // type 0 is removing 
+  } else {
+    oldList.splice(move.index, 0, move.item) // type 1 is inserting 
+  }
+})
+ 
+// now `oldList` is equal to `newList` 
+// [{id: "c"}, {id: "a"}, {id: "b"}, {id: "e"}, {id: "f"}] 
+console.log(oldList)*/ 
