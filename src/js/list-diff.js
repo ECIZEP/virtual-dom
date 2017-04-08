@@ -26,11 +26,11 @@ function diffList (newList, oldList, key) {
 		i = 0,
 		freeIndex = 0,
 		// 根据oldList的序号，找到newList中key对应的新的节点
-		children = [],
+		newChildren = [],
 		// 记录操作的对象数组，type-0为删除 1位插入
 		moves = [];
 
-	// 第一步：使用children过滤一遍oldList，把要newList中不存在的节点干掉
+	// 第一步：使用newChildren过滤一遍oldList，把要newList中不存在的节点干掉
 	while (i < oldList.length) {
 		let item = oldList[i];
 		let itemKey = getKeyValue(item, key);
@@ -38,21 +38,21 @@ function diffList (newList, oldList, key) {
 			if (newKeyIndex.hasOwnProperty(itemKey)) {
 				// 新的list里面有这个元素,把最新的push进去
 				let newItemIndex = newKeyIndex[itemKey];
-				children.push(newList[newItemIndex]);
+				newChildren.push(newList[newItemIndex]);
 			} else {
 				// 没有的就是要删除的，push 空，占个位置
-				children.push(null);
+				newChildren.push(null);
 			}
 		} else {
 			let freeItem = newFree[freeIndex++];
-			children.push(freeItem || null);
+			newChildren.push(freeItem || null);
 		}
 		i++;
 	}
 
 	// 第二步，前面过滤的节点，将之删除的操作push进moves数组记录
 	i = 0;
-	let simulateList = children.slice();
+	let simulateList = newChildren.slice();
 	while (i < simulateList.length) {
 		if (simulateList[i] === null) {
 			remove(i);
@@ -76,6 +76,7 @@ function diffList (newList, oldList, key) {
 		if (simulateItem) {
 			if (simulateItemKey === itemKey) {
 				// 位置和元素都没有变化，不用动
+				// key 为undefined时，直接j++ i++,move为空，不操作
 				j++;
 			} else {
 				if (!oldKeyIndex.hasOwnProperty(itemKey)) {
@@ -96,7 +97,7 @@ function diffList (newList, oldList, key) {
 				}
 			}
 		} else {
-			// 没有key标识的，无法判断simulate和newList节点是否为同一个，所以只能当新的节点插入
+			// 什么样的情况代码会跑到这里？
 			insert(i, item);
 		}
 		i++;
@@ -119,7 +120,7 @@ function diffList (newList, oldList, key) {
 
 	return {
 		moves: moves,
-		children: children
+		newChildren: newChildren
 	}
 
 }	
@@ -162,11 +163,10 @@ function getKeyValue(item, key) {
 
 exports.diffList = diffList;
 
-
 /*var oldList = [{id: "a"}, {id: "b"}, {id: "c"}, {id: "d"}, {id: "e"}]
 var newList = [{id: "c"}, {id: "a"}, {id: "b"}, {id: "e"}, {id: "f"}]
  
-var moves = diffList(newList, oldList, "key")
+var moves = diffList(newList, oldList, "id")
 // `moves` is a sequence of actions (remove or insert):  
 // type 0 is removing, type 1 is inserting 
 // moves: [ 

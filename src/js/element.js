@@ -52,13 +52,3 @@ Element.prototype.render = function () {
 
     return el;
 }
-
-/*
-var ul = new Element('ul', { id: 'list' }, [
-            new Element('li', { class: 'item' }, ['Item 1']),
-            new Element('li', { class: 'item' }, ['Item 2']),
-            new Element('li', { class: 'item' }, ['Item 3'])
-            ]);
-
-var ulRoot = ul.render();
-document.body.appendChild(ulRoot);*/

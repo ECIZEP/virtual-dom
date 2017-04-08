@@ -40,7 +40,7 @@ function dfsWalk(newNode, oldNode, patches, index) {
         // 如果key都是 undefined，diffList无法优化重排
         let diffChildren = diffList(newNode.children, oldNode.children, "key");
         // newChildren是对应oldNode.children序列的新元素，
-        let newChildren = diffChildren.children;
+        let newChildren = diffChildren.newChildren;
 
         // 子元素需要重新排序，把重排的步骤压入
         // key:undefined的情况，此处diffChildren.moves为空，按最坏的情况处理，递归进子节点一个一个修改Text
@@ -102,91 +102,3 @@ function diffProps (newNode, oldNode) {
 
     return propsPatches;
 }
-
-/*
-  var AGE = 'age'
-  var REPUTATION = 'reputation'
-
-  var sortKey = AGE
-  var sortType = 1
-
-  var list = [
-    {username: 'Jerry', age: 12, reputation: 200, uid: 'user1'},
-    {username: 'Pony', age: 33, reputation: 3000, uid: 'user4'},
-    {username: 'Lucy', age: 21, reputation: 99, uid: 'user2'},
-    {username: 'Tomy', age: 20, reputation:20, uid: 'user3'},
-    {username: 'Funky', age: 49, reputation: 521, uid: 'user5'}
-  ]
-
-  // render table
-  function renderTree () {
-    var rows = renderRows()
-    return new Element('div', [
-      new Element('b', ['sortKey: ' + sortKey, ' | sortType: ' + (sortType ? 'up' : 'down')]),
-      new Element('table', [
-        new Element('thead', [
-          new Element('tr', [
-            new Element('th', ['UID']),
-            new Element('th', ['NAME']),
-            new Element('th', {'id': 'sort-head1', sortKey: 'age'}, ['AGE']),
-            new Element('th', {'id': 'sort-head2', sortKey: 'reputation'}, ['REPUTATION'])
-          ])
-        ]),
-        new Element('tbody', rows)
-      ])
-    ])
-  }
-
-  function renderRows() {
-    var rows = []
-    for (var i = 0, len = list.length; i < len; i++) {
-      var item = list[i]
-      rows.push(
-        new Element('tr', {key: item.uid}, [
-          new Element('td', [item.uid]),
-          new Element('td', [item.username]),
-          new Element('td', [item.age]),
-          new Element('td', [item.reputation]),
-        ])
-      )
-    }
-    return rows
-  }
-
-  var tree = renderTree()
-  var dom = tree.render()
-  document.body.appendChild(dom)
-
-  var sortTriggers = [
-    document.getElementById('sort-head1'),
-    document.getElementById('sort-head2')
-  ]
-  for (var i = 0, len = sortTriggers.length; i < len; i++) {
-    var trigger = sortTriggers[i];
-    (function(_trigger){
-      _trigger.onclick = function () {
-        var key = _trigger.getAttribute('sortKey')
-        if (key === sortKey) {
-          sortType = !sortType
-        } else {
-          sortKey = key
-          sortType = 1
-        }
-        sortData()
-        var newTree = renderTree()
-        var patches = diff(newTree, tree)
-        console.log(patches);
-        tree = newTree
-      }
-    })(trigger)
-  }
-
-  function sortData() {
-    list.sort(function (a, b) {
-      if (sortType) {
-        return a[sortKey] - b[sortKey]
-      } else {
-        return b[sortKey] - a[sortKey]
-      }
-    })
-  }*/

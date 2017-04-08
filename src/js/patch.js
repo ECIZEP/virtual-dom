@@ -65,8 +65,9 @@ function reorderChildNodes(dom, moves) {
 
     let map = {};
     staticChildNodes.forEach(function (child) {
-        if (child.key) {
-            map[child.key] = child;
+        let keyValue = child.getAttribute("key");
+        if (keyValue) {
+            map[keyValue] = child;
         }
     });
 
